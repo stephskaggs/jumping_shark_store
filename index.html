@@ -19,7 +19,7 @@
     <br>
     <div class="items">
       <!-- TODO add the items from the JSON files in this format -->
-      <!-- <div class="list-item">
+     <!--  <div class="list-item">
         <div class="list-item-image">
           <img src="img/cat_toy.jpg" alt="">
         </div>
@@ -46,11 +46,11 @@
       </thead>
       <tbody>
         <!-- TODO when an item is added to the cart, it should be formatted as follows -->
-        <!-- <tr class="cart-item">
+        <tr class="cart-item">
           <td class="cart-item-name">Cat Toy</td>
           <td class="cart-item-price">$10</td>
           <td class="cart-item-remove"><a href="#" class="button">Remove</a></td>
-        </tr> -->
+        </tr>
       </tbody>
     </table>
     <!-- TODO the total should reflect to total value of all items currently in the cart -->
@@ -60,5 +60,43 @@
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
   <script src="js/main.js"></script>
+
+  <script>
+  $(document).ready(function(){
+
+  $.getJSON( "../items.json", function(json) {
+
+    for(var i in json) {
+      $(".items").append("<div class=\"list-item\"><div class=\"list-item-image\"><img src=\"../img/" + json[i].image + "\"></div><div class=\"list-item-header\"><span class=\"list-item-name\">" + json[i].name + "</span><span class=\"list-item-price\">" + json[i].price + "</span></div><div class=\"list-item-add\"><a href=\"#\" class=\"button\">Add to cart</a></div></div>");
+    }
+
+  });
+
+  updateTotal = function() {
+    var total = 0;
+    $(".cart-item-price").each(function() {
+      total += parseInt($(this).html().substring(1));
+    });
+    $("#cart-total").html("$" + total);
+  };
+
+  $(document).on("click", ".list-item-add .button", function (e) {
+    e.preventDefault();
+    var $parent = $(this).parents(".list-item");
+    var name = $parent.find(".list-item-name").html();
+    var price = $parent.find(".list-item-price").html();
+    $("#cart tbody").append("<tr class=\"cart-item\"><td class=\"cart-item-name\">" + name + "</td><td class=\"cart-item-price\">" + price + "</td><td class=\"cart-item-remove\"><a href=\"#\" class=\"button\">Remove</a></td></tr>");
+    updateTotal();
+  });
+
+  $(document).on("click", ".cart-item-remove .button", function (e) {
+    e.preventDefault();
+    $(this).parents(".cart-item").remove();
+    updateTotal();
+  });
+
+});
+
+</script>
 </body>
 </html>
